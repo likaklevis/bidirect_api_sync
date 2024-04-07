@@ -23,7 +23,7 @@
 
                             <button name="test_connection" string="Test API Configuration" type="object"
                                     class="oe_highlight"/>
-                            <button name="invalidate_api_key" invisible="not valid" string="Invalidate API Key"
+                            <button name="invalidate_api" invisible="not valid" string="Invalidate Configuration"
                                     type="object" class="btn-danger"/>
                         </group>
                     </sheet>

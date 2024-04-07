@@ -52,6 +52,6 @@ class OutgoingApiKey(models.Model):
         token = b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")
         return f'{token}'
 
-    def invalidate_api_key(self):
+    def invalidate_api(self):
         self.valid = False
         self.api_key = False
