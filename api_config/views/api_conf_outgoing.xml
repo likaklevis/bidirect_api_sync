@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Outgoing Services API KEY-->
+        <!--        Configure API key         -->
+
+        <record id="view_outgoing_api_key_form" model="ir.ui.view">
+            <field name="name">outgoing.api.key.form</field>
+            <field name="model">outgoing.api.key</field>
+            <field name="arch" type="xml">
+                <form string="API Key">
+                    <sheet>
+                        <group>
+                            <separator string="Settings for API Key"/>
+                            <field name="name"/>
+                            <field name="api_endpoint"/>
+
+                            <field name="api_auth_type"/>
+                            <field name="api_custom_header" invisible="api_auth_type != 'header_api_key'" required="api_auth_type == 'header_api_key'"/>
+                            <field name="api_key"/>
+                            <field name="valid"/>
+
+                            <button name="test_connection" string="Test API Configuration" type="object"
+                                    class="oe_highlight"/>
+                            <button name="invalidate_api_key" invisible="not valid" string="Invalidate API Key"
+                                    type="object" class="btn-danger"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="outgoing_api_key_tree" model="ir.ui.view">
+            <field name="name">outgoing.api.key.tree</field>
+            <field name="model">outgoing.api.key</field>
+            <field name="arch" type="xml">
+                <tree string="Outgoing API KEY">
+                    <field name="name"/>
+                    <field name="valid"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="outgoing_api_key_filter" model="ir.ui.view">
+            <field name="name">outgoing.api.key.search</field>
+            <field name="model">outgoing.api.key</field>
+            <field name="arch" type="xml">
+                <search string="Outgoing API KEY">
+                    <field name="name"/>
+                    <field name="valid"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="open_outgoing_api_key_tree" model="ir.actions.act_window">
+            <field name="name">Outgoing API KEY</field>
+            <field name="res_model">outgoing.api.key</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="outgoing_api_key_filter"/>
+        </record>
+
+        <menuitem action="open_outgoing_api_key_tree" id="outgoing_api_key_menu_config" name="Outgoing API KEY"
+                  parent="base.menu_email" sequence="100" groups="base.group_system"/>
+
+    </data>
+</odoo>

@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <!--Services API KEY-->
+        <!--Incoming API KEY-->
         <!--        Configure API key         -->
 
         <record id="view_services_api_key_form" model="ir.ui.view">
@@ -31,7 +31,7 @@
             <field name="name">services.api.key.tree</field>
             <field name="model">services.api.key</field>
             <field name="arch" type="xml">
-                <tree string="Services API KEY">
+                <tree string="Incoming API KEY">
                     <field name="name"/>
                     <field name="identifier"/>
                     <field name="valid"/>
@@ -43,7 +43,7 @@
             <field name="name">services.api.key.search</field>
             <field name="model">services.api.key</field>
             <field name="arch" type="xml">
-                <search string="Services API KEY">
+                <search string="Incoming API KEY">
                     <field name="name"/>
                     <field name="valid"/>
                 </search>
@@ -51,14 +51,11 @@
         </record>
 
         <record id="open_services_api_key_tree" model="ir.actions.act_window">
-            <field name="name">Services API KEY</field>
+            <field name="name">Incoming API KEY</field>
             <field name="res_model">services.api.key</field>
             <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="services_api_key_filter"/>
         </record>
-
-        <menuitem action="open_services_api_key_tree" id="services_api_key_menu_config" name="Services API KEY"
-                  parent="base.menu_email" sequence="100" groups="base.group_system"/>
 
         <!--        Generate API key Wizard      -->
 

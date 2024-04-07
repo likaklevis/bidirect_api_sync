@@ -5,7 +5,9 @@
     'category': 'API',
     'depends': ['base',],
     'data': [
-        'views/api_config_view.xml',
+        'views/api_conf_incoming.xml',
+        'views/api_conf_outgoing.xml',
+        'views/api_menu.xml',
     ],
     'installable': True,
     'application': True,
