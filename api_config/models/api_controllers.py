@@ -13,7 +13,7 @@ def wrap_response(response, status_code):
 class ApiRoutes(http.Controller):
 
     @http.route([f'{COMMON_API_ENDPOINT}/<string:model_ref>/<int:source_res_id>/<string:hash_value>'], type="http",
-                auth="api_key", website=True, methods=['HEAD'], csrf=False)
+                auth="api_key", website=True, methods=['HEAD'], csrf=False)  # make it so if there is any pending/failed return code 301
     def check_if_resource_updated(self, model_ref, res_id):
         try:
             return wrap_response(ar.success({'ID': request.env[model_ref].browse(res_id).id}), 200)

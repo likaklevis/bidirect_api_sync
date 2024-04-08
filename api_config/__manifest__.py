@@ -9,6 +9,7 @@
         'views/api_conf_outgoing.xml',
         'views/api_synchronization.xml',
         'views/api_menu.xml',
+        'data/ir_cron.xml',
     ],
     'installable': True,
     'application': True,
