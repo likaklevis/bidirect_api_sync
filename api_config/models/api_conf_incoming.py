@@ -37,7 +37,7 @@ class ServicesApiKey(models.Model):
         except Exception:
             raise ValidationError(_('API not correct'))
 
-        api_obj = self.env['services.api.key'].sudo().search([('identifier', '=', identifier), ('valid', '=', True), ])
+        api_obj = self.env['services.api.key'].search([('identifier', '=', identifier), ('valid', '=', True), ])
         if not api_obj or not apisecure.validate_key(key, api_obj.api_key):
             raise ValidationError(_('API not correct'))
 

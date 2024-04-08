@@ -65,10 +65,9 @@
                     <sheet>
                         <field name="state" widget="statusbar"/>
                         <group>
-                            <field name="name"/>
                             <field name="synchronization_config"/>
                             <field name="res_id"/>
-                            <field name="type"/>
+                            <field name="sync_type"/>
                             <field name="hash_value"/>
                             <field name="internal_last_updated"/>
                             <field name="external_last_updated"/>
@@ -83,7 +82,6 @@
             <field name="model">synchronization.queue.logs</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="name"/>
                     <field name="res_id"/>
                     <field name="state"/>
                 </tree>
@@ -95,7 +93,6 @@
             <field name="model">synchronization.queue.logs</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name"/>
                     <field name="res_id"/>
                     <field name="state"/>
                 </search>
