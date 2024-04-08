@@ -37,23 +37,34 @@ class SynchronizationDataMapping(models.Model):
         """Maps the data of the internal fields, to the external one. Preparing data to send to external application."""
         field_map = self.field_mapping_to_dict()
         new_external_field_dict = {}
-        for key, value in dict_val.items():
-            if key in field_map:
-                new_external_field_dict[field_map[key]] = value
-
+        for internal_key, external_key in dict_val.items():
+            if internal_key in field_map:
+                new_external_field_dict[field_map[internal_key]] = external_key
         return new_external_field_dict
 
-    def create_queue(self, type, res_id, data, last_updated):
+    def internal_fields_mapping(self, dict_val):
+        """This is the reverse of what external fields_mapping does. Formatting data from external application to internal one."""
+        field_map = self.field_mapping_to_dict()
+        new_external_field_dict = {}
+        for internal_key, external_key in field_map.items():
+            if external_key in dict_val:
+                new_external_field_dict[internal_key] = dict_val[external_key]
+        return new_external_field_dict
+
+    def create_queue(self, type, res_id, data, sync_type, external_id=None, last_updated=None):
+        if last_updated is None:
+            last_updated = fields.datetime.now()
         """Creates a new synchronization log in the queue. A CRON job will attempt to send this data to the external application."""
-        self.env['synchronization.queue.logs'].create(
+        return self.env['synchronization.queue.logs'].create(
             {
                 'synchronization_config': self.id,
                 'res_id': res_id,
                 'state': 'pending',
-                'sync_type': 'outgoing',
+                'sync_type': sync_type,
                 'type': type,
                 'data': data,
-                'internal_last_updated': last_updated
+                'internal_last_updated': last_updated,
+                'external_id': external_id,
             }
         )
 
@@ -81,15 +92,18 @@ class SynchronizationQueueLogs(models.Model):
                               ('failed', 'Failed')], string='State')
     sync_type = fields.Selection([('incoming', 'Incoming'), ('outgoing', 'Outgoing'), ], string='Synchronization type', help="Incoming if it is being updated from external application, outgoing if it is being updated from our application")
     type = fields.Selection([('create', 'Create'), ('update', 'Update'), ('delete', 'Delete'), ], string='Type', help="Type of action of the record")
-    hash_value = fields.Char(string='Hash Value', readonly=True)
+    external_id = fields.Char(string='External ID', readonly=True)
     data = fields.Char(string='Data')
     internal_last_updated = fields.Datetime(string='Internal last updated')
-    external_last_updated = fields.Datetime(string='External last updated')
+    latest_error_message = fields.Text(string='Error', readonly=True)
 
     _sql_constraints = [('model_id_uniq', 'unique(model_id)', 'Each model can have only one configuration.')]
 
     def external_fields_mapping(self, dict_val):
         return self.synchronization_config.external_fields_mapping(dict_val)
+
+    def get_config_by_model_name(self, model_name):
+        return self.synchronization_config.get_by_model_name(model_name)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -120,16 +134,61 @@ class SynchronizationQueueLogs(models.Model):
     #             )
 
     @api.model
+    def get_pending_failed_records(self, sync_type='outgoing', model_ref=None):
+        domain = [('state', 'in', ['pending', 'failed'])]
+        if model_ref:
+            synchronization_config = self.get_config_by_model_name(model_ref)
+            domain.append(('synchronization_config', '=', synchronization_config))
+        if sync_type:
+            domain.append(('sync_type', '=', sync_type))
+        return self.search(domain)
+
+    @api.model
+    def get_latest_log_per_record(self, res_id, model_ref=None):
+        domain = []
+        if model_ref:
+            synchronization_config = self.get_config_by_model_name(model_ref)
+            domain.append(('synchronization_config', '=', synchronization_config.id))
+        if res_id:
+            domain.append(('res_id', '=', res_id))
+        return self.search(domain, order='create_date desc', limit=1)
+
+    @api.model
     def _cron_sync(self):
-        """This CRON Job will check for all pending and failed queues, and will attempt to send them one by one."""
-        pending_failed_records = self.search([('state', 'in', ['pending', 'failed'])])
+        """This CRON Job will check for all pending and failed queues, and will attempt to send them one by one.
+        It is separated in two-parts, first outgoing requests and then the incoming requests."""
+        pending_failed_outgoing_records = self.get_pending_failed_records()
         outgoing_api_id = self.env['outgoing.api.key'].search([('valid', '=', True), ('name', '=', 'ext_project_app')], limit=1)
-        for record in pending_failed_records:
+        for record in pending_failed_outgoing_records:
             try:
                 mapped_external_field = record.external_fields_mapping(ast.literal_eval(record.data))
                 outgoing_api_id.send_data_to_api(json.dumps(mapped_external_field))
-            except:
-                print('Error sending data to API')
+            except Exception as e:
+                record.latest_error_message = str(e)
+                record.state = 'failed'
+                continue
+            record.state = 'success'
+
+        pending_failed_incoming_records = self.get_pending_failed_records(sync_type='incoming')
+        for record in pending_failed_incoming_records:
+            try:
+                data = ast.literal_eval(record.data)
+                if record.type == 'create':
+                    if data:
+                        data['external_project_id'] = record.external_id
+                        data['last_sync_date'] = record.internal_last_updated
+                        data['synced_boolean'] = True
+                    res = self.env[record.synchronization_config.model_id.model].with_context({"apisync-incoming": True}).create(data)
+                    record.res_id = res.id
+                if record.type == 'update':
+                    if data:
+                        data['last_sync_date'] = record.internal_last_updated
+                        data['synced_boolean'] = True
+                    self.env[record.synchronization_config.model_id.model].browse(record.res_id).with_context({"apisync-incoming": True}).write(data)
+                if record.type == 'delete':
+                    self.env[record.synchronization_config.model_id.model].browse(record.res_id).with_context({"apisync-incoming": True}).unlink()  # Maybe soft-delete?
+            except Exception as e:
+                record.latest_error_message = str(e)
                 record.state = 'failed'
                 continue
             record.state = 'success'

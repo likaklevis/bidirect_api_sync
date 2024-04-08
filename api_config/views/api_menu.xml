@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <menuitem name="API SYNC SETTINGS" id="api_sync_main" groups="base.group_system" parent="base.menu_custom">
+        <menuitem name="API SYNC SETTINGS" id="api_sync_main" groups="group_api_sync_user" parent="base.menu_custom">
             <menuitem action="open_services_api_key_tree" id="services_api_key_menu_config" name="Incoming API KEY"/>
             <menuitem action="open_outgoing_api_key_tree" id="outgoing_api_key_menu_config" name="Outgoing API KEY"/>
             <menuitem action="open_sync_data_map_tree" id="open_sync_data_map_menu_config"

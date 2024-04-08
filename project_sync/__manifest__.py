@@ -5,6 +5,7 @@
     'category': 'API',
     'depends': ['api_config', 'project'],
     'data': [
+        'data/pre_config_project_data.xml',
     ],
     'installable': True,
 }

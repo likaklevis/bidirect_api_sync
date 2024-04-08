@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_group_api_sync_user_data_map,synchronization.data.mapping,model_synchronization_data_mapping,api_config.group_api_sync_user,1,1,1,1
+access_group_api_sync_user_queue_log,synchronization.queue.logs,model_synchronization_queue_logs,api_config.group_api_sync_user,1,1,1,1
+access_group_api_sync_user_services_api_key,services.api.key,model_services_api_key,api_config.group_api_sync_user,1,1,1,1
+access_group_api_sync_user_outgoing_api_key,outgoing.api.key,model_outgoing_api_key,api_config.group_api_sync_user,1,1,1,1
+access_group_api_sync_user_generate_api_key_wizard,generate.api.key.wizard,model_generate_api_key_wizard,api_config.group_api_sync_user,1,1,1,1

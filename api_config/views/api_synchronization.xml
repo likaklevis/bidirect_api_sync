@@ -68,10 +68,9 @@
                             <field name="synchronization_config"/>
                             <field name="res_id"/>
                             <field name="sync_type"/>
-                            <field name="hash_value"/>
                             <field name="data"/>
                             <field name="internal_last_updated"/>
-                            <field name="external_last_updated"/>
+                            <field name="latest_error_message"/>
                         </group>
                     </sheet>
                 </form>

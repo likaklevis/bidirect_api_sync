@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="pre_project_api_out_config" model="outgoing.api.key">
+            <field name="name">ext_project_app</field>
+            <field name="api_key">edit this...</field>
+            <field name="api_endpoint">edit this...</field>
+            <field name="api_auth_type">auth_basic</field>
+        </record>
+
+    </data>
+</odoo>
