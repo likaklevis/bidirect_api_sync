@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Synchronizing Data Mapping -->
+
+        <record id="view_sync_data_map_form" model="ir.ui.view">
+            <field name="name">synchronization.data.mapping.form</field>
+            <field name="model">synchronization.data.mapping</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="state" widget="statusbar"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="model_id"/>
+                            <field name="source_field_id" domain="[('model_id', '=', model_id),('store', '=', True)]"/>
+                            <field name="source_field_name"/>
+                            <field name="field_mapping"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="sync_data_map_tree" model="ir.ui.view">
+            <field name="name">synchronization.data.mapping.tree</field>
+            <field name="model">synchronization.data.mapping</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="model_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="sync_data_map_filter" model="ir.ui.view">
+            <field name="name">synchronization.data.mapping.search</field>
+            <field name="model">synchronization.data.mapping</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="model_id"/>
+                    <field name="state"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="open_sync_data_map_tree" model="ir.actions.act_window">
+            <field name="name">Synchronization Data Mapping</field>
+            <field name="res_model">synchronization.data.mapping</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="sync_data_map_filter"/>
+        </record>
+
+        <!-- Synchronization Queue Logs -->
+
+        <record id="view_sync_queue_logs_form" model="ir.ui.view">
+            <field name="name">synchronization.queue.logs.form</field>
+            <field name="model">synchronization.queue.logs</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="state" widget="statusbar"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="synchronization_config"/>
+                            <field name="res_id"/>
+                            <field name="type"/>
+                            <field name="hash_value"/>
+                            <field name="internal_last_updated"/>
+                            <field name="external_last_updated"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="sync_queue_logs_tree" model="ir.ui.view">
+            <field name="name">synchronization.queue.logs.tree</field>
+            <field name="model">synchronization.queue.logs</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="res_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="sync_queue_logs_filter" model="ir.ui.view">
+            <field name="name">synchronization.queue.logs.search</field>
+            <field name="model">synchronization.queue.logs</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="res_id"/>
+                    <field name="state"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="open_sync_queue_logs_tree" model="ir.actions.act_window">
+            <field name="name">Synchronization Queue Logs</field>
+            <field name="res_model">synchronization.queue.logs</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="sync_queue_logs_filter"/>
+        </record>
+
+    </data>
+</odoo>
