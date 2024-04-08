@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--Incoming API KEY-->
+        <!--        Configure API key         -->
+
+        <record id="view_services_api_key_form" model="ir.ui.view">
+            <field name="name">services.api.key.form</field>
+            <field name="model">services.api.key</field>
+            <field name="arch" type="xml">
+                <form string="API Key">
+                    <sheet>
+                        <group>
+                            <separator string="Settings for API Key"/>
+                            <field name="name"/>
+                            <field name="user_id"/>
+
+                            <field name="valid"/>
+                            <field name="identifier"/>
+
+                            <button name="open_generate_api_key_wizard" invisible="bool(identifier)" string="Generate API Key" type="object" class="oe_highlight"/>
+                            <button name="invalidate_api_key" invisible="not valid" string="Invalidate API Key" type="object" class="btn-danger"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="services_api_key_tree" model="ir.ui.view">
+            <field name="name">services.api.key.tree</field>
+            <field name="model">services.api.key</field>
+            <field name="arch" type="xml">
+                <tree string="Incoming API KEY">
+                    <field name="name"/>
+                    <field name="identifier"/>
+                    <field name="valid"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="services_api_key_filter" model="ir.ui.view">
+            <field name="name">services.api.key.search</field>
+            <field name="model">services.api.key</field>
+            <field name="arch" type="xml">
+                <search string="Incoming API KEY">
+                    <field name="name"/>
+                    <field name="valid"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="open_services_api_key_tree" model="ir.actions.act_window">
+            <field name="name">Incoming API KEY</field>
+            <field name="res_model">services.api.key</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="services_api_key_filter"/>
+        </record>
+
+        <!--        Generate API key Wizard      -->
+
+        <record id="view_generate_api_key_wizard_form" model="ir.ui.view">
+            <field name="name">generate.api.key.wizard.form</field>
+            <field name="model">generate.api.key.wizard</field>
+            <field name="arch" type="xml">
+                <form string="API Key">
+                    <sheet>
+                        <div colspan="4" style="width: 100%;  padding: 12px 16px;  border-radius: 4px;  border-style: solid;  border-width: 1px;  margin-bottom: 12px;  font-size: 12px; background-color: rgba(255, 236, 187, 0.8);  color: rgba(113, 83, 6, 0.8);  border-color: rgba(236, 159, 37, 0.8);">
+                        Only copy and store the API Key safely now, as after saving it will be hashed and won't be retrievable later.
+                        </div>
+                        <group>
+                            <field name="api_key"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="apply_key" string="Apply" type="object" class="oe_highlight"/>
+                        <button string="Discard" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
